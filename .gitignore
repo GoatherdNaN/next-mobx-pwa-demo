@@ -1,0 +1,23 @@
+# dependencies
+/node_modules
+.idea
+.next
+
+# production
+/dist
+
+# misc
+.DS_Store
+npm-debug.log*
+
+# umi
+.umi
+.umi-production
+
+.vscode
+
+package-lock.json
+.vscode/settings.json
+
+yarn.lock
+package-lock.json
