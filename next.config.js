@@ -1,22 +1,18 @@
 const path = require('path');
 const WorkboxPlugin = require('workbox-webpack-plugin');
-const withLess = require('@zeit/next-less');
+const withLess = require('./lib/next-less');
+const theme = require('./theme');
 
 if (typeof require !== 'undefined') {
   require.extensions['.less'] = (file) => {}
 }
 
 module.exports = withLess({
-	cssModules: true,
-  lessLoaderOptions: {
-    javascriptEnabled: true,
-  },
+	antdConfig: {
+		withAntd: true,
+		theme
+	},
   webpack: (config, { buildId, dev }) => {
-		/**
-		 * Install and Update our Service worker
-		 * on our main entry file :)
-		 * Reason: https://github.com/ooade/NextSimpleStarter/issues/32
-		 */
 		const oldEntry = config.entry
 
 		config.entry = () =>
@@ -29,7 +25,6 @@ module.exports = withLess({
 		/* Enable only in Production */
 		if (!dev) {
 			// Service Worker
-
 			config.plugins.push(
 				new WorkboxPlugin.InjectManifest({
 					swSrc: path.join(__dirname, 'utils', 'sw.js'),

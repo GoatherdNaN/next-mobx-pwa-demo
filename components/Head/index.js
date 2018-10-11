@@ -13,7 +13,6 @@ const PublicHead = ()=>(
     <meta name="Description" content="Next 7 demo"/>
     <meta name="author" content="edlan"/>
     <title>Next7</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.5.4/antd.min.css" rel="stylesheet" />
     <link rel='stylesheet' type='text/css' href='/static/css/nprogress.css' />
   </Head>
 )
