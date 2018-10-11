@@ -1,6 +1,6 @@
 import React from 'react'
 import Router from 'next/router'
-import { Carousel } from 'antd';
+import { Carousel, Button } from 'antd';
 
 export default class Other extends React.Component {
   static async getInitialProps () {
@@ -31,6 +31,7 @@ export default class Other extends React.Component {
             <img src="/static/img/3.jpg" alt="图片加载错误" />
           </div>
         </Carousel>
+        <Button type="primary">测试样式</Button>
         <style jsx>{`
           .banner {
             width: 830px;

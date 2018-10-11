@@ -5,9 +5,11 @@ import { Provider } from 'mobx-react'
 import NProgress from 'nprogress'
 import Router from 'next/router'
 import withMobxStore from '../lib/with-mobx-store'
-import Head from '../components/Head'
-import Header from '../components/Header'
-import Page from '../components/Page';
+import Head from 'components/Head'
+import Header from 'components/Header'
+import Page from 'components/Page';
+
+import reset from '../static/css/reset.less';
 
 
 Router.events.on('routeChangeStart', (url) => {
@@ -36,22 +38,7 @@ export default class MyApp extends App {
             <Component {...pageProps} />
           </Page>
         </Provider>
-        <style global jsx>{`
-          .fl {
-            float: left;
-          }
-
-          .fr {
-            float: right;
-          }
-
-          .clearfix:after {
-            content: '';
-            display: table;
-            height: 0;
-            clear: both;
-          }
-        `}</style>
+        <style global jsx>{reset}</style>
       </Container>
     )
   }

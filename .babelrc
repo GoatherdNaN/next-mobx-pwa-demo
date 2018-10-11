@@ -4,6 +4,13 @@
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/plugin-syntax-dynamic-import",
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    ["module-resolver", {
+      "root": ["."],
+      "alias": {
+        "components": "./components"
+      },
+      "cwd": "babelrc"
+    }],
     [
       "import",
       {
