@@ -14,11 +14,13 @@ module.exports = withLess({
 	},
   webpack: (config, { buildId, dev }) => {
 		const oldEntry = config.entry
-
 		config.entry = () =>
 			oldEntry().then(entry => {
 				entry['main.js'] &&
-					entry['main.js'].push(path.resolve('./utils/offline'))
+					entry['main.js'].push(
+						path.resolve('./pages/other.js'),
+						path.resolve('./utils/offline')
+					);
 				return entry
 			})
 

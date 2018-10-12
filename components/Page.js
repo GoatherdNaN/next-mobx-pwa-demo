@@ -12,6 +12,7 @@ export default (props) => (
         padding: 20px;
         overflow-y: auto;
         background: url(/static/img/wrapperBc.jpg) no-repeat 0 0;
+        background-size: cover;
       }
     `}</style>
   </div>

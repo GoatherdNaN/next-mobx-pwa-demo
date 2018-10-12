@@ -5,7 +5,6 @@ import { Provider } from 'mobx-react'
 import NProgress from 'nprogress'
 import Router from 'next/router'
 import withMobxStore from '../lib/with-mobx-store'
-import Head from 'components/Head'
 import Header from 'components/Header'
 import Page from 'components/Page';
 
@@ -31,7 +30,6 @@ export default class MyApp extends App {
     const {Component, pageProps, mobxStore} = this.props;
     return (
       <Container>
-        <Head />
         <Header />
         <Provider {...mobxStore}>
           <Page>

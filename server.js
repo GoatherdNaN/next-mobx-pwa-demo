@@ -1,21 +1,27 @@
-const port = parseInt(process.env.PORT, 10) || 3000
-const dev = process.env.NODE_ENV !== 'production'
-
 const { createServer } = require('http')
-const { parse } = require('url')
+const path = require('path')
 const next = require('next')
-const mobxReact = require('mobx-react')
-const app = next({ dev })
+const { parse } = require('url')
+
+const dev = process.env.NODE_ENV !== 'production'
+const app = next({ dir: '.', dev })
 const handle = app.getRequestHandler()
 
-mobxReact.useStaticRendering(true)
+const PORT = process.env.PORT || 3000
 
-app.prepare().then(() => {
-  createServer((req, res) => {
-    const parsedUrl = parse(req.url, true)
-    handle(req, res, parsedUrl)
-  }).listen(port, err => {
-    if (err) throw err
-    console.log(`> Ready on http://localhost:${port}`)
-  })
+app.prepare().then(_ => {
+	const server = createServer((req, res) => {
+		if (req.url === '/sw.js' || req.url.startsWith('/precache-manifest')) {
+			app.serveStatic(req, res, path.join(__dirname, '.next', req.url))
+		} else {
+      const parsedUrl = parse(req.url, true)
+      handle(req, res, parsedUrl)
+		}
+	})
+
+	server.listen(PORT, err => {
+		if (err) throw err
+
+		console.log(`> App running on port ${PORT}`)
+	})
 })

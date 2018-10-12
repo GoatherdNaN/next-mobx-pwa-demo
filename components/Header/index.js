@@ -1,16 +1,16 @@
 import React from 'react';
-import Router from 'next/router'
+import { withRouter } from 'next/router'
 import { Menu, Icon } from 'antd';
 import styles from './index.less';
 
-
-class Header extends React.Component {
+@withRouter
+export default class Header extends React.Component {
   state = {
     current: 'index'
   }
 
   componentDidMount() {
-    const { pathname } = Router;
+    const { pathname } = this.props.router;
     let current = pathname.replace(/\//i, '');
     if (!current) {
       current = 'index';
@@ -25,7 +25,7 @@ class Header extends React.Component {
       if(key === 'other') {
         target.query= { currentIndex: Math.floor(Math.random() * (2 - 0 + 1)) + 0 };
       }
-      Router.push(target);
+      this.props.router.push(target);
     });
   };
 
@@ -51,4 +51,3 @@ class Header extends React.Component {
     );
   }
 };
-export default Header;

@@ -1,6 +1,7 @@
 import 'isomorphic-fetch'
 import React from 'react';
 import { inject, observer } from 'mobx-react'
+import Head from 'components/Head'
 import TodoHeader from 'components/TodoHeader';
 import TodoMain from 'components/TodoMain';
 import TodoFooter from 'components/TodoFooter';
@@ -37,6 +38,7 @@ class Index extends React.Component {
     } = this.props.todoStore;
     return (
       <div className={styles.panel}>
+        <Head title="Todo" />
         <h1>
           TODOS：
           {count}

@@ -1,6 +1,7 @@
 import React from 'react'
 import Router from 'next/router'
 import { Carousel, Button } from 'antd';
+import Head from 'components/Head'
 
 export default class Other extends React.Component {
   static async getInitialProps () {
@@ -20,6 +21,7 @@ export default class Other extends React.Component {
   render () {
     return (
       <div className="banner">
+        <Head title="Other" />
         <Carousel ref={node => (this.slider = node)} autoplay>
           <div>
             <img src="/static/img/1.jpg" alt="图片加载错误" />
