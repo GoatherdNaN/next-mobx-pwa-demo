@@ -1,7 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
+// import manifest from '../../.next/build-manifest.json';
+import { log } from 'util';
 
 const PublicHead = props => {
+  // const cssPath = manifest.pages['/_app'].filter(v=>/(?:css)$/.test(v))[1];
   return (
     <Head>
       <meta charSet="utf-8"/>
@@ -15,6 +18,7 @@ const PublicHead = props => {
       <meta name="author" content="edlan"/>
       <title>{props.title}</title>
       <link rel='stylesheet' type='text/css' href='/static/css/nprogress.css' />
+      {/* <link rel='stylesheet' type='text/css' href={`/_next/${cssPath}`} /> */}
     </Head>
   )
 }
