@@ -70,6 +70,8 @@ if(!!antdConfig.withAntd) {
 ```
 // next.config.js
 // 引入@zeit/next-css/css-loader-config
+const cssLoaderConfig = require('@zeit/next-css/css-loader-config')
+...
 const getLessConfig = (cssModules=false, modifyVars=null) => {
     const options = { javascriptEnabled: true };
     !!modifyVars && (options.modifyVars = modifyVars);
