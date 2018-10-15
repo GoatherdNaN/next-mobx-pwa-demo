@@ -65,7 +65,40 @@ if(!!antdConfig.withAntd) {
   }
 ```
 实现了在开启cssModules的情况下，可按需引入antd样式，并定制主题。
-2. 由于按需加载的缘故，导致初次加载之后，切换page,antd样式没有生效，查看编译文件，发现文件其实是编译了的，只不过HMR没有生效，这个暂时没有好的办法，只能等next后期能修复这个bug，目前的做法：
+### 改进做法：
+
+```
+// next.config.js
+// 引入@zeit/next-css/css-loader-config
+const getLessConfig = (cssModules=false, modifyVars=null) => {
+    const options = { javascriptEnabled: true };
+    !!modifyVars && (options.modifyVars = modifyVars);
+    return cssLoaderConfig(config, {
+        extensions: ['less'],
+        cssModules,
+        dev,
+        isServer,
+        loaders: [{
+            loader: 'less-loader',
+            options: {
+            	javascriptEnabled: true
+            }
+        }]
+    })
+}
+
+config.module.rules.push({
+	test: /\.less$/,
+	exclude: path.resolve(__dirname,"node_modules"), // node_modules以外的启用cssModules
+	use: getLessConfig(true)
+},{
+	test: /\.less$/,
+	include: path.resolve(__dirname,"node_modules/antd/lib"), // antd的样式启用cssModules
+	use: getLessConfig(false,theme)
+})
+```
+
+2. 由于按需加载的缘故，导致初次加载之后，切换page,antd样式没有生效，查看编译文件，发现文件其实是编译了的，只不过HMR没有生效，这个暂时没有好的办法，只能等next后期能修复这个bug([Issues](https://github.com/zeit/next.js/issues/4184))，目前的做法：
 
 ```
 /**next.config.js，在入口中手动加入其他page*/
@@ -79,4 +112,3 @@ config.entry = () =>
 		return entry
 	})
 ```
-
