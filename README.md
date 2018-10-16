@@ -118,7 +118,11 @@ i. 在<Head />中引入的css静态资源的后面加上v=?
 ```
 <!--components\Head-->
 <!--每次时间戳变更都会拉取css，虽然缓存机制，导致再次拉取内容没变的css所需的时间成本极小，但若非实在没其他办法的情况下不建议用-->
-<link rel='stylesheet' type='text/css' href={`/_next/static/css/styles.chunk.css?v=${new Date().getTime()}`} />
+const isDev = process.env.NODE_ENV !== 'production'
+...
+{
+   isDev && <link rel='stylesheet' type='text/css' href={`/_next/static/css/styles.chunk.css?v=${new Date().getTime()}`} />
+}
 ```
 
 ```
