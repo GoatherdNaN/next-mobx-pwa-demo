@@ -23,7 +23,6 @@ $ npm run dev
 ├─.next # 编译后生成的所有代码、资源
 ├─components #  组件，可以是纯HTML，也可以包含js/css/image等，看自己需要
 ├─lib # 
-│   ├─next-less # @zeit/next-less源码，修改了部分以支持ant样式的按需加载和cssModules
 │   └─with-mobx-store.js # 服务器端和浏览器端状态同步的文件
 ├─pages # 页面，对应到路由，具体参考next文档
 ├─static # 静态文件，包括图片、css之类
