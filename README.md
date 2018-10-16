@@ -129,6 +129,14 @@ config.entry = () =>
 ii. 手动在_app.js中加入需要用到的antd样式
 
 ```
+<!--.babelrc-->
+[
+      "import",
+      {
+        "libraryName": "antd",
+        "style": false
+      }
+    ]
 <!--myAntd.less-->
 @import "~antd/lib/menu/style/index.less";
 @import "~antd/lib/carousel/style/index.less";
