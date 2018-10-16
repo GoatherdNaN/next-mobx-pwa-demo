@@ -115,7 +115,7 @@ withLess({
 
 i. 在入口中手动加入其他page
 ```
-/**next.config.js，会连同其他页面的js一起加进来，是去了提高首屏加载速度的目的*/
+/**next.config.js，会连同其他页面的js一起加进来，违背了提高首屏加载速度的初衷*/
 config.entry = () =>
 	oldEntry().then(entry => {
 		entry['main.js'] &&
