@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'next/router'
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
 import styles from './index.less';
 
 @withRouter

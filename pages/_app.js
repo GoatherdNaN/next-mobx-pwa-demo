@@ -8,6 +8,7 @@ import withMobxStore from '../lib/with-mobx-store'
 import Header from 'components/Header'
 import Page from 'components/Page';
 
+import myAntd from '../static/css/myAntd.less';
 import reset from '../static/css/reset.less';
 
 
@@ -36,6 +37,7 @@ export default class MyApp extends App {
             <Component {...pageProps} />
           </Page>
         </Provider>
+        <style global jsx>{myAntd}</style>
         <style global jsx>{reset}</style>
       </Container>
     )
