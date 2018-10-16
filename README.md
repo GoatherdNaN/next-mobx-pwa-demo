@@ -36,39 +36,86 @@ $ npm run dev
 ```
 ## 踩坑
 1. 由于next-less处理样式是全局统一处理，如果开启cssModules，无法过滤掉部分样式，将导致ant样式引入进来无法生效，参考其他开发者的做法，基本上都是在Head中将样式用link引入，而无法实现按需引入，并且无法定制antd主题。  
-目前，我的做法是直接将next-less源码拉下来，并加入过滤：
+目前，探索过的方案:
+
+i. 查看@zeit/next-less的代码，发现它其实依赖于看@zeit/next-css来生成less的loader配置，所以：
 
 ```
-if(!!antdConfig.withAntd) {
-    lessLoaderConfig.exclude = path.resolve("./node_modules");
-    config.module.rules.push({
-      test: /\.less$/,
-      include: path.resolve("./node_modules/antd/lib"),
-      use: cssLoaderConfig(config, {
+// next.config.js
+// 引入@zeit/next-css/css-loader-config
+const getLessConfig = (cssModules=false, modifyVars=null) => {
+    const options = { javascriptEnabled: true };
+    !!modifyVars && (options.modifyVars = modifyVars);
+    return cssLoaderConfig(config, {
         extensions: ['less'],
-        cssModules: false,
-        cssLoaderOptions,
-        postcssLoaderOptions,
+        cssModules,
         dev,
         isServer,
-        loaders: [
-          {
+        loaders: [{
             loader: 'less-loader',
             options: {
-              ...lessLoaderOptions,
-              modifyVars: antdConfig.theme
+            	javascriptEnabled: true
             }
-          }
-        ]
-      })
+        }]
     })
-  }
-```
-实现了在开启cssModules的情况下，可按需引入antd样式，并定制主题。
-2. 由于按需加载的缘故，导致初次加载之后，切换page,antd样式没有生效，查看编译文件，发现文件其实是编译了的，只不过HMR没有生效，这个暂时没有好的办法，只能等next后期能修复这个bug，目前的做法：
+}
 
+config.module.rules.push({
+	test: /\.less$/,
+	exclude: path.resolve(__dirname,"node_modules"), // node_modules以外的启用cssModules
+	use: getLessConfig(true)
+},{
+	test: /\.less$/,
+	include: path.resolve(__dirname,"node_modules/antd/lib"), // antd的样式启用cssModules
+	use: getLessConfig(false,theme)
+})
 ```
-/**next.config.js，在入口中手动加入其他page*/
+ii. 改变cssModules的生成规则，过滤掉相关文件夹
+    
+    
+```
+const avoidPaths = ['node_modules/antd'].map(d => path.join(__dirname, d));
+
+function canBeTransformed(pathToCheck) {
+	return !avoidPaths.some(function(v) {
+		const path = pathToCheck.substr(0, pathToCheck.lastIndexOf('/') + 1);
+		return v.includes(path);
+	});
+}
+...
+withLess({
+	cssModules: true,
+	lessLoaderOptions: {
+		javascriptEnabled: true,
+		modifyVars: theme
+	},
+	cssLoaderOptions: {
+		getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+			const fileName = path.basename(loaderContext.resourcePath)
+			const shoudTransform = canBeTransformed(loaderContext.resourcePath)
+
+			if(!shoudTransform){
+				return localName
+			}else{
+				const name = fileName.replace(/\.[^/.]+$/, "")
+				const suffix = name.substring(name.lastIndexOf("_") + 1);
+				if(suffix === "module") {
+						return `${name}___${localName}`
+				} else {
+						return localName
+				}
+			}
+		}
+	}
+})
+```
+这两个方案都可实现在next中，区别配置cssModules
+
+2. 由于按需加载的缘故，导致初次加载之后，切换page,antd样式没有生效，查看编译文件，发现文件其实是编译了的，只不过HMR没有生效，这个暂时没有好的办法，只能等next-plugin后期更新能修复这个bug([Issues](https://github.com/zeit/next-plugins/issues/263))，目前探索过的做法：
+
+i. 在入口中手动加入其他page
+```
+/**next.config.js，会连同其他页面的js一起加进来，违背了提高首屏加载速度的初衷*/
 config.entry = () =>
 	oldEntry().then(entry => {
 		entry['main.js'] &&
@@ -79,4 +126,24 @@ config.entry = () =>
 		return entry
 	})
 ```
+ii. 手动在_app.js中加入需要用到的antd样式
 
+```
+<!--.babelrc-->
+[
+      "import",
+      {
+        "libraryName": "antd",
+        "style": false
+      }
+    ]
+<!--myAntd.less-->
+@import "~antd/lib/menu/style/index.less";
+@import "~antd/lib/carousel/style/index.less";
+@import "~antd/lib/button/style/index.less";
+<!--_app.js-->
+import myAntd from '../static/css/myAntd.less';
+...
+<style global jsx>{myAntd}</style>
+```
+第二个方案可以花最小的代价实现需求，不过也不是真正的按需加载，只是比全局引入所有样式的方式好一些，不过每次使用一个新的antd组件,都要手动在myAntd.less引入相关样式才行，略麻烦
