@@ -125,8 +125,6 @@ const isDev = process.env.NODE_ENV !== 'production'
 }
 ```
 
-```
-
 
 ii. 在入口中手动加入其他page
 ```
