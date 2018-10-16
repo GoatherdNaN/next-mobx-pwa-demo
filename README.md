@@ -150,4 +150,4 @@ import myAntd from '../static/css/myAntd.less';
 ...
 <style global jsx>{myAntd}</style>
 ```
-第二个方案可以花最小的代价实现需求，不过也不是真正的按需加载，只是比全局引入所有样式的方式好一些，不过每次使用一个新的antd组件,都要手动在myAntd.less引入相关样式才行，略麻烦!
+第三个方案可以花最小的代价实现需求，不过也不是真正的按需加载，只是比全局引入所有样式的方式好一些，不过每次使用一个新的antd组件,都要手动在myAntd.less引入相关样式才行，略麻烦!
