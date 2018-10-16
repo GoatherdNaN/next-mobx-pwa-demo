@@ -113,9 +113,20 @@ withLess({
 
 2. 由于按需加载的缘故，导致初次加载之后，切换page,antd样式没有生效，查看编译文件，发现文件其实是编译了的，只不过HMR没有生效，这个暂时没有好的办法，只能等next-plugin后期更新能修复这个bug([Issues](https://github.com/zeit/next-plugins/issues/263))，目前探索过的做法：
 
-i. 在入口中手动加入其他page
+i. 在<Head />中引入的css静态资源的后面加上v=?
+
 ```
-/**next.config.js，会连同其他页面的js一起加进来，违背了提高首屏加载速度的初衷*/
+<!--components\Head-->
+<!--每次时间戳变更都会拉取css，虽然缓存机制，导致再次拉取内容没变的css所需的时间成本极小，但若非实在没其他办法的情况下不建议用-->
+<link rel='stylesheet' type='text/css' href={`/_next/static/css/styles.chunk.css?v=${new Date().getTime()}`} />
+```
+
+```
+
+
+ii. 在入口中手动加入其他page
+```
+/**next.config.js，会连同其他页面的js一起加进来，是去了提高首屏加载速度的目的*/
 config.entry = () =>
 	oldEntry().then(entry => {
 		entry['main.js'] &&
@@ -126,17 +137,9 @@ config.entry = () =>
 		return entry
 	})
 ```
-ii. 手动在_app.js中加入需要用到的antd样式
+iii. 手动在_app.js中加入需要用到的antd样式
 
 ```
-<!--.babelrc-->
-[
-      "import",
-      {
-        "libraryName": "antd",
-        "style": false
-      }
-    ]
 <!--myAntd.less-->
 @import "~antd/lib/menu/style/index.less";
 @import "~antd/lib/carousel/style/index.less";
@@ -146,4 +149,4 @@ import myAntd from '../static/css/myAntd.less';
 ...
 <style global jsx>{myAntd}</style>
 ```
-第二个方案可以花最小的代价实现需求，不过也不是真正的按需加载，只是比全局引入所有样式的方式好一些，不过每次使用一个新的antd组件,都要手动在myAntd.less引入相关样式才行，略麻烦
+第二个方案可以花最小的代价实现需求，不过也不是真正的按需加载，只是比全局引入所有样式的方式好一些，不过每次使用一个新的antd组件,都要手动在myAntd.less引入相关样式才行，略麻烦!
